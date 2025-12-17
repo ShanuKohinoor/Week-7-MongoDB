@@ -1,0 +1,205 @@
+   TASK 
+    1. Create a database named school and a collection named students.
+    2. Each student should have details like name, course, marks, isPassed, dob, joiningDate, subjects, address, and remarks, using different data types.
+    3. Display all inserted documents.
+    4. Extract the creation time of each document from its _id.
+
+
+
+1. Create a database named school and a collection named students.
+    test> use school
+output:-
+    switched to db school
+
+    school> db.createCollection('students')
+output:-
+    { ok: 1 }
+
+
+2. Each student should have details like name, course, marks, isPassed, dob, joiningDate, subjects, address, and remarks, using different data types.
+
+     school> db.students.insertMany([                                                                            
+     {
+         name: "Shan Pullani",                       // string
+         course: "English",                          
+         marks: 99,                                  // Number
+         isPassed: true,                             // Boollean
+         dob: new Date("2015-08-02"),                // Date
+         joiningDate: new Date("2018-04-01"),
+         subjects: ["Grammar", "Literature", "Poetry"],  // Array
+         address: {                                      // Object
+           houseName: "Pullaniyil",
+           pincode: 668899
+         },
+         remarks: null                                  // Null
+       },
+       {
+         name: "Shanu Shahanas",
+         course: "Mathematics",
+         marks: 98,
+         isPassed: true,
+         dob: new Date("2016-12-08"),
+         joiningDate: new Date("2020-02-20"),
+         subjects: ["Statistics", "Arithmetic"],
+         address: {
+           houseName: "Kohinoor",
+           pincode: 667788
+         },
+         remarks: "Need improvement in statistics"
+       }
+     ])
+    
+    {
+    acknowledged: true,
+    insertedIds: {
+        '0': ObjectId('693ffa7501d39878251e2621'),
+        '1': ObjectId('693ffa7501d39878251e2622')
+    }
+    }
+    school> db.students.insertMany([
+       {
+         name: "Faraza Pullani",
+         course: "English",
+         marks: 92,
+         isPassed: true,
+         dob: new Date("2017-05-14"),
+         joiningDate: new Date("2021-06-01"),
+         subjects: ["Grammar", "Creative Writing", "Literature"],
+         address: {
+           houseName: "Pullaniyil",
+           pincode: 668899
+         },
+         remarks: "Excellent writing skills"
+       },
+       {
+         name: "Filza Pullani",
+         course: "Mathematics",
+         marks: 88,
+         isPassed: true,
+         dob: new Date("2018-03-22"),
+         joiningDate: new Date("2022-06-01"),
+         subjects: ["Algebra", "Statistics", "Geometry"],
+         address: {
+           houseName: "Pullaniyil",
+           pincode: 668899
+         },
+         remarks: "Good problem-solving ability"
+    
+       },
+       {
+         name: "Fenza Pullani",                                                                              
+         course: "Science",
+         marks: 75,
+         isPassed: true,
+         dob: new Date("2019-01-10"),
+         joiningDate: new Date("2023-06-01"),
+         subjects: ["Physics", "Chemistry", "Biology"],
+         address: {
+           houseName: "Pullaniyil",
+           pincode: 668899
+         },
+         remarks: "Needs more practical exposure"
+       }
+     ])
+    
+    {
+    acknowledged: true,
+    insertedIds: {
+        '0': ObjectId('693ffbaa01d39878251e2623'),
+        '1': ObjectId('693ffbaa01d39878251e2624'),
+        '2': ObjectId('693ffbaa01d39878251e2625')
+    }
+    }
+
+
+
+ 3. Display all inserted documents.
+
+        school> db.students.find().pretty()
+        [
+        {
+            _id: ObjectId('693fa595c5d7f5eb8b1e2621'),
+            name: 'Shanu',
+            course: '8'
+        },
+        {
+            _id: ObjectId('693ffa7501d39878251e2621'),
+            name: 'Shan Pullani',
+            course: 'English',
+            marks: 99,
+            isPassed: true,
+            dob: ISODate('2015-08-02T00:00:00.000Z'),
+            joiningDate: ISODate('2018-04-01T00:00:00.000Z'),
+            subjects: [ 'Grammar', 'Literature', 'Poetry' ],
+            address: { houseName: 'Pullaniyil', pincode: 668899 },
+            remarks: null
+        },
+        {
+            _id: ObjectId('693ffa7501d39878251e2622'),
+            name: 'Shanu Shahanas',
+            course: 'Mathematics',
+            marks: 98,
+            isPassed: true,
+            dob: ISODate('2016-12-08T00:00:00.000Z'),
+            joiningDate: ISODate('2020-02-20T00:00:00.000Z'),
+            subjects: [ 'Statistics', 'Arithmetic' ],
+            address: { houseName: 'Kohinoor', pincode: 667788 },
+            remarks: 'Need improvement in statistics'
+        },
+        {
+            _id: ObjectId('693ffbaa01d39878251e2623'),
+            name: 'Faraza Pullani',
+            course: 'English',
+            marks: 92,
+            isPassed: true,
+            dob: ISODate('2017-05-14T00:00:00.000Z'),
+            joiningDate: ISODate('2021-06-01T00:00:00.000Z'),
+            subjects: [ 'Grammar', 'Creative Writing', 'Literature' ],
+            address: { houseName: 'Pullaniyil', pincode: 668899 },
+            remarks: 'Excellent writing skills'
+        },
+        {
+            _id: ObjectId('693ffbaa01d39878251e2624'),
+            name: 'Filza Pullani',
+            course: 'Mathematics',
+            marks: 88,
+            isPassed: true,
+            dob: ISODate('2018-03-22T00:00:00.000Z'),
+            joiningDate: ISODate('2022-06-01T00:00:00.000Z'),
+            subjects: [ 'Algebra', 'Statistics', 'Geometry' ],
+            address: { houseName: 'Pullaniyil', pincode: 668899 },
+            remarks: 'Good problem-solving ability'
+        },
+        {
+            _id: ObjectId('693ffbaa01d39878251e2625'),
+            name: 'Fenza Pullani',
+            course: 'Science',
+            marks: 75,
+            isPassed: true,
+            dob: ISODate('2019-01-10T00:00:00.000Z'),
+            joiningDate: ISODate('2023-06-01T00:00:00.000Z'),
+            subjects: [ 'Physics', 'Chemistry', 'Biology' ],
+            address: { houseName: 'Pullaniyil', pincode: 668899 },
+            remarks: 'Needs more practical exposure'
+        }
+        ]
+
+
+
+
+ 4. Extract the creation time of each document from its _id.
+        school> db.students.find().forEach(doc=>{ 
+            print('Name:',doc.name,                                                                                 
+                'Created At:',doc._id.getTimestamp())
+        })
+
+
+     output:-
+        Name: Shanu Created At: ISODate('2025-12-15T06:07:17.000Z')
+        Name: Shan Pullani Created At: ISODate('2025-12-15T12:09:25.000Z')
+        Name: Shanu Shahanas Created At: ISODate('2025-12-15T12:09:25.000Z')
+        Name: Faraza Pullani Created At: ISODate('2025-12-15T12:14:34.000Z')
+        Name: Filza Pullani Created At: ISODate('2025-12-15T12:14:34.000Z')
+        Name: Fenza Pullani Created At: ISODate('2025-12-15T12:14:34.000Z')
+
+
