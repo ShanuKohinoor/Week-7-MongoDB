@@ -1,0 +1,246 @@
+Tasks:
+    1 Use the same school database and students collection created on Day 1.
+    2 Update a student’s marks or course using $set.
+    3 Increase marks of all passed students by 5 using $inc.
+    4 Remove the remarks field from all documents using $unset.
+    5 Delete one student whose course is "Math".
+    6 Show only name, course, and marks for all students.
+    7 Find students with marks > 80 and course = "Science".
+    8 Sort results by marks (highest first) and limit to 3 results.
+    9 Use a regex query to find students whose name starts with ‘A’.
+    10 Loop through all documents using forEach() and print student names.
+
+
+
+    1 Use the same school database and students collection created on Day 1.
+       a. run:- mongosh in terminal
+       b. run :- show dbs 
+                    admin     40.00 KiB
+                    config    36.00 KiB
+                    hospital  16.00 KiB
+                    local     40.00 KiB
+                    school    64.00 KiB
+                    test       8.00 KiB
+       c. run :- use school
+                    switched to db school
+
+       
+
+    2 Update a student’s marks or course using $set.
+
+    run:-
+        school> db.students.updateOne(
+                 {name:'Faraza Pullani'},{$set:{marks:98}}
+                )    
+    output:-
+                {
+                acknowledged: true,
+                insertedId: null,
+                matchedCount: 1,
+                modifiedCount: 1,
+                upsertedCount: 0
+                }
+
+
+
+    3 Increase marks of all passed students by 5 using $inc.
+
+    run:-  school> db.students.updateMany( 
+            { isPassed: true, marks:{$lte:95}
+            },{$inc: {marks:5}                                                                         
+            }                                                                                          
+            )     
+
+      output:-
+    {
+    acknowledged: true,
+    insertedId: null,
+    matchedCount: 2,
+    modifiedCount: 2,
+    upsertedCount: 0
+    }
+
+
+
+    4 Remove the remarks field from all documents using $unset.
+
+        run:-
+
+            school> db.students.updateMany(
+            {},{$unset:{remarks:''} }                                                                  
+            )   
+
+        output:-
+
+        {
+        acknowledged: true,
+        insertedId: null,
+        matchedCount: 6,
+        modifiedCount: 5,
+        upsertedCount: 0
+        }
+
+             // output:-
+                                _id
+                    693ffbaa01d39878251e2623
+                    name
+                    "Faraza Pullani"
+                    course
+                    "English"
+                    marks
+                    98
+                    isPassed
+                    true
+                    dob
+                    2017-05-14T00:00:00.000+00:00
+                    joiningDate
+                    2021-06-01T00:00:00.000+00:00
+
+                    subjects
+                    Array (3)
+
+                    address
+
+
+    5 Delete one student whose course is "Math".
+
+      run:-
+          school> db.students.deleteOne( {course:'Mathematics'})
+
+          { acknowledged: true,
+           deletedCount: 1 }
+
+    6 Show only name, course, and marks for all students.
+
+      run:-
+
+        school> db.students.find(
+        {},{name:1, course:1, marks:1, _id:0}
+        )   
+  
+
+
+     Output will be:-
+        [
+        { name: 'Shanu', course: '8' },
+        { name: 'Shan Pullani', course: 'English', marks: 99 },
+        { name: 'Faraza Pullani', course: 'English', marks: 98 },
+        { name: 'Filza Pullani', course: 'Mathematics', marks: 93 },
+        { name: 'Fenza Pullani', course: 'Science', marks: 80 }
+        ]
+
+
+
+    7 Find students with marks > 80 and course = "Science".
+
+      run:-
+
+       school> db.students.find(
+       {marks: {$gt:80},course:'Science'})  
+
+       output will be:-   
+                [
+                {
+                    _id: ObjectId('693ffbaa01d39878251e2625'),
+                    name: 'Fenza Pullani',
+                    course: 'Science',
+                    marks: 85,
+                    isPassed: true,
+                    dob: ISODate('2019-01-10T00:00:00.000Z'),
+                    joiningDate: ISODate('2023-06-01T00:00:00.000Z'),
+                    subjects: [ 'Physics', 'Chemistry', 'Biology' ],
+                    address: { houseName: 'Pullaniyil', pincode: 668899 }
+                }
+                ]
+
+
+         // we can't write like this,school>
+                db.students.find(
+               {},{marks: {$gt:80},course:'Science'})   // Projection only allows 1 (include) or 0 (exclude)
+          
+           so, we can write like,
+           school> db.students.find( { course: 'Science', marks: { $gt: 80 }},{name:1,_id:0})
+          
+           output:-
+            [ { name: 'Fenza Pullani' } ]
+
+    8 Sort results by marks (highest first) and limit to 3 results.
+
+      run:-  school> db.students.find().sort({marks:-1}).limit(3)
+
+        output will be:-
+
+                [
+            {
+                _id: ObjectId('693ffa7501d39878251e2621'),
+                name: 'Shan Pullani',
+                course: 'English',
+                marks: 99,
+                isPassed: true,
+                dob: ISODate('2015-08-02T00:00:00.000Z'),
+                joiningDate: ISODate('2018-04-01T00:00:00.000Z'),
+                subjects: [ 'Grammar', 'Literature', 'Poetry' ],
+                address: { houseName: 'Pullaniyil', pincode: 668899 }
+            },
+            {
+                _id: ObjectId('693ffbaa01d39878251e2623'),
+                name: 'Faraza Pullani',
+                course: 'English',
+                marks: 98,
+                isPassed: true,
+                dob: ISODate('2017-05-14T00:00:00.000Z'),
+                joiningDate: ISODate('2021-06-01T00:00:00.000Z'),
+                subjects: [ 'Grammar', 'Creative Writing', 'Literature' ],
+                address: { houseName: 'Pullaniyil', pincode: 668899 }
+            },
+            {
+                _id: ObjectId('693ffbaa01d39878251e2624'),
+                name: 'Filza Pullani',
+                course: 'Mathematics',
+                marks: 93,
+                isPassed: true,
+                dob: ISODate('2018-03-22T00:00:00.000Z'),
+                joiningDate: ISODate('2022-06-01T00:00:00.000Z'),
+                subjects: [ 'Algebra', 'Statistics', 'Geometry' ],
+                address: { houseName: 'Pullaniyil', pincode: 668899 }
+            }
+            ]
+
+
+ // If we write like this:-
+
+          run:-    school> db.students.find(
+                   {},{name:1,_id:0}).sort({name:-1}).limit(3)
+
+    Output will be,get name alone:-
+
+                [
+                { name: 'Shanu' },
+                { name: 'Shan Pullani' },
+                { name: 'Filza Pullani' }
+                ]
+
+
+    9 Use a regex query to find students whose name starts with ‘A’.
+
+      run:- school> db.students.find( { name: { $regex: '^A', $options:'i'} },{name:1,_id:0})
+
+
+       Output will be:-
+
+       [ { name: 'Ayath' } ]
+
+
+
+    10 Loop through all documents using forEach() and print student names.
+
+      run:- school> db.students.find().forEach(doc=> print(doc.name) )
+
+       Output will be:-                                                                                          
+            Shanu
+            Shan Pullani
+            Faraza Pullani
+            Filza Pullani
+            Fenza Pullani
+            Ayath
+
