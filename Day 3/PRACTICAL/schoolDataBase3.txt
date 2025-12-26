@@ -1,0 +1,406 @@
+Tasks:
+    1. Use the same school database and students collection.
+    2. Add a new field attendance: 90 for all students using $set.
+    3. Rename field marks → totalMarks using $rename.
+    4. Increase attendance by 5 using $inc.
+    5. Add a new array field activities and push values like “Sports”, “Music”.
+    6. Add “Art” to all activities using $addToSet.
+    7. Remove “Music” from activities using $pull.
+    8. Limit activities to 3 items using $push with $slice.
+    9. Add a lastUpdated field using $currentDate.
+    10. Update only a specific array element using arrayFilters.
+    11. Upsert a student named Neha if not already present.
+    12. Use findOneAndUpdate() to modify one student and return the updated document.
+    13. Perform a bulkWrite with three operations:
+         • Update one student’s attendance.
+         • Insert a new student.
+         • Delete one student whose course = "History".
+    14. Show the final updated data using find().pretty().
+
+
+
+
+
+
+
+
+    1. Use the same school database and students collection.
+           a. run:- mongosh in terminal
+           b. run:- use school
+                               switched to db school
+
+    2. Add a new field attendance: 90 for all students using $set.
+
+     run:- school> db.students.updateMany( {}, { $set: { attendance: 90 } })
+
+     output:-
+                {
+                acknowledged: true,
+                insertedId: null,
+                matchedCount: 6,
+                modifiedCount: 5,
+                upsertedCount: 0
+                }
+
+                output will be:- 
+                _id: ObjectId('693ffa7501d39878251e2621')
+                name: Shan Pullani                        // String
+                course: English                           // String
+                marks: 99                                 // Int32
+                isPassed: true                            // Boolean
+                dob: 2015-08-02T00:00:00.000+00:00        // Date
+                joiningDate: 2018-04-01T00:00:00.000+00:00    //Date
+                subjects : Array (5)                          // Array
+                      0: 'Grammar'                   // String
+                      1: 'Literature'                // String
+                      2: 'Poetry'                    // String
+                      3: 'Phonetics'                 // String
+                      4: 'Phonetics-2                // String
+
+               address: Object                               // Object
+                     houseName: 'Pullaniyil'                // String
+                     pincode: 668899                        // Int32
+
+               attendance: 90                               // Int32
+
+
+                                       // Like this, attendance field added in all students.
+
+    3. Rename field marks → totalMarks using $rename.
+
+        run:- 
+          school> db.students.updateMany(
+                {},{$rename:{marks:'totalMarks'}}
+          )
+
+
+          output:- 
+                {
+                acknowledged: true,
+                insertedId: null,
+                matchedCount: 6,
+                modifiedCount: 5,
+                upsertedCount: 0
+                }
+
+                           // Will change marks field of every students to totalMarks
+    4. Increase attendance by 5 using $inc.
+ 
+        run:-
+            school> db.students.updateMany(
+               {},{$inc:{attendance:5}}
+            )                                                                                                            
+                 
+                 output:-    {
+                    acknowledged: true,
+                    insertedId: null,
+                    matchedCount: 6,
+                    modifiedCount: 6,
+                    upsertedCount: 0
+                    }
+                                        // Will incremenet attendance from 90 to 95.
+
+    5. Add a new array field activities and push values like “Sports”, “Music”.
+       
+       run:- 
+        school> db.students.updateMany( {},{$push:{activities:{$each:['Sports','Music']}}})
+
+             output:-
+                    {
+                    acknowledged: true,
+                    insertedId: null,
+                    matchedCount: 6,
+                    modifiedCount: 6,
+                    upsertedCount: 0
+                    }
+                             // If we use $push(Array update Operator) alone,can't add two values.
+                             // For add two or more values use $each(helper Array Update Operator) inside the field.(like, {activities:{$each:['sports','music']}})
+    
+    6. Add “Art” to all activities using $addToSet.
+        run:-
+             school> db.students.updateMany( {}, { $addToSet: { activities:'Art' } })
+             
+             output:-
+                {
+                acknowledged: true,
+                insertedId: null,
+                matchedCount: 6,
+                modifiedCount: 6,
+                upsertedCount: 0
+                }
+                                       // Add 'Art' value to the array ['Sports','Music','Art']
+
+    7. Remove “Music” from activities using $pull.
+   
+        run:-
+                school> db.students.updateMany(
+            ...   {},{$pull:{activities:'Music'
+            ...   }                                                                                                                                    
+            ...   }                                                                                                                                    
+            ... ) 
+
+        output:-                                                                                                                                    
+            {
+            acknowledged: true,
+            insertedId: null,
+            matchedCount: 6,
+            modifiedCount: 6,
+            upsertedCount: 0
+            }
+                                                 // Will results removing of Music from activities field
+
+
+    8. Limit activities to 3 items using $push with $slice.
+
+         run:- 
+           school> db.students.updateMany( {},{$push:{activities:{$each:['Cultural'],$slice:3}}})
+
+           output:-
+                    {
+                    acknowledged: true,
+                    insertedId: null,
+                    matchedCount: 6,
+                    modifiedCount: 6,
+                    upsertedCount: 0
+                    }                           
+                                 //  add Cultural to the field 'activities' then limit to 3 values
+                                 //  and result will be ['Sports','Music','Art']
+                                 //  $each helps to add 'Cultural' and $slice help to limit to 3 values.
+
+
+
+            // If we don't want to add any values, we can run code like:-
+            db.students.updateMany(
+                    {},
+                    {
+                        $push: {
+                        activities: {
+                            $each: [],       // here i didn't add any values like 'Cultural'. Keep it empty []
+                            $slice: 3
+                        }
+                        }
+                    }
+                    )          // Because $slice only works with $push and $each
+
+
+    9. Add a lastUpdated field using $currentDate.
+
+      run:-
+             school> db.students.updateMany(
+              {},{$currentDate:{lastUpdated:true}}
+            )    
+
+            output:-                                                                                            
+                {
+                acknowledged: true,
+                insertedId: null,
+                matchedCount: 6,
+                modifiedCount: 6,
+                upsertedCount: 0
+                }
+                                       // if currentDate field doesn't exist, and we run like this,it will creates the field with the current timestamp
+                                       // if currentDate field exist,MongoDB will overwrite and update to new timestamp
+    
+    10. Update only a specific array element using arrayFilters.
+    
+    run:-
+           db.students.updateOne(
+            { name: 'Shanu' },                  // Filter the document
+            { $set: { 'subjects.$[elem]' : 'Modern History' } },  // Update operator-update matched element
+            { arrayFilters: [ { 'elem': 'Contemporary History' } ] }        //  which array element to update
+           )
+                                     //  intially subject array was like:-
+                                        subjects: Array (3)
+                                            0: "Ancient History"
+                                            1: "Contemporary History"
+                                            2: "Medevial History"
+
+
+
+                                    // After running the code output will be:-
+                                        subjects: Array (3)
+                                            0: "Ancient History"
+                                            1: "Modern History"
+                                            2: "Medevial History"
+
+
+
+
+
+    11. Upsert a student named Neha if not already present.
+       run:-
+    school> db.students.updateOne({name:'Neha'}, { $set: { course: 'Sanskrit' } }, { upsert: true })
+
+
+    output:-
+             {
+                acknowledged: true,
+                insertedId: ObjectId('694d86d55cae55fd78596ffb'),
+                matchedCount: 0,
+                modifiedCount: 0,
+                upsertedCount: 1
+            }
+
+                   // will create a document named 'Neha'
+                   
+                             _id: 694d86d55cae55fd78596ffb
+                              name: 'Neha'
+                              course: 'Sanskrit'
+
+
+    12. Use findOneAndUpdate() to modify one student and return the updated document.
+ // Initially have likethis:=
+                        {
+                    _id: ObjectId('693fa595c5d7f5eb8b1e2621'),
+                    name: 'Shanu',
+                    course: 'History',
+                    attendance: 95,
+                    activities: [ 'Sports', 'Cultural', 'Dance' ],
+                    lastUpdated: ISODate('2025-12-25T16:41:43.975Z'),
+                    subjects: [ 'Ancient History', 'Modern History', 'Medeevial History' ],
+                    marks: 2,
+                    totalMarks: 94
+                    }
+
+            when we run:-
+                    school> db.students.findOneAndUpdate( { name: 'Shanu' }, { $inc: {totalMarks: 6 } }, { returnDocument: 'after' })
+                   
+              output will be:-     
+                    {
+                    _id: ObjectId('693fa595c5d7f5eb8b1e2621'),
+                    name: 'Shanu',
+                    course: 'History',
+                    attendance: 95,
+                    activities: [ 'Sports', 'Cultural', 'Dance' ],
+                    lastUpdated: ISODate('2025-12-25T16:41:43.975Z'),
+                    subjects: [ 'Ancient History', 'Modern History', 'Medeevial History' ],
+                    marks: 2,
+                    totalMarks: 100
+                    }                                // change totalMarks from 94 to 100
+
+    13. Perform a bulkWrite with three operations:
+         • Update one student’s attendance.
+         • Insert a new student.
+         • Delete one student whose course = "History".
+      
+       run:-
+                        school> db.students.bulkWrite([
+                ...     {updateOne: {
+                ...       filter: { name: "Shanu" },
+                ...       update: { $inc: { attendance: 5 } }}},
+                ...   {
+                ...     insertOne: {document: {
+                ..       name: "Neha",
+                ...         course: "Maths",
+                ...         attendance: 80   } }},
+                ...   {
+                ...     deleteOne: {
+                ...       filter: { course: "History" }}}
+                ... ])
+                ...
+
+   output:-
+                    {
+                    acknowledged: true,
+                    insertedCount: 1,
+                    insertedIds: { '1': ObjectId('694d8e397837e0cb431e2621') },
+                    matchedCount: 1,
+                    modifiedCount: 1,
+                    deletedCount: 1,
+                    upsertedCount: 0,
+                    upsertedIds: {}
+                    }
+                                         // Here, delete entire document named 'Shanu' because 'deleteOne'
+                                            delete entire document. $unset can only delete specific field.
+                                        // deleteOne delete matching first element. And delete that entire document.
+                                        // So,if we want to restrict from deletion any specific document, we have to mention that. like:-
+                                        // deleteOne:{filter:{course:'History, name: {$ne: 'Shanu'}}}
+                                                            // $ne means not equal to.
+                                                            // Other than name Shanu document delete.
+
+    14. Show the final updated data using find().pretty().
+      run:-
+         school> db.students.find().pretty()
+
+     output:-
+                    [
+                    {
+                        _id: ObjectId('693ffa7501d39878251e2621'),
+                        name: 'Shan Pullani',
+                        course: 'English',
+                        isPassed: true,
+                        dob: ISODate('2015-08-02T00:00:00.000Z'),
+                        joiningDate: ISODate('2018-04-01T00:00:00.000Z'),
+                        subjects: [ 'Grammar', 'Literature', 'Poetry', 'Phonetics', 'Phonetics-2' ],
+                        address: { houseName: 'Pullaniyil', pincode: 668899 },
+                        attendance: 95,
+                        totalMarks: 99,
+                        activities: [ 'Sports', [ 'Music' ], [ 'Art' ], 'Cultural', 'Dance' ],
+                        lastUpdated: ISODate('2025-12-25T16:41:43.975Z')
+                    },
+                    {
+                        _id: ObjectId('693ffbaa01d39878251e2623'),
+                        name: 'Faraza Pullani',
+                        course: 'English',
+                        isPassed: true,
+                        dob: ISODate('2017-05-14T00:00:00.000Z'),
+                        joiningDate: ISODate('2021-06-01T00:00:00.000Z'),
+                        subjects: [ 'Grammar', 'Creative Writing', 'Literature', 'Phonetics-2' ],
+                        address: { houseName: 'Pullaniyil', pincode: 668899 },
+                        attendance: 95,
+                        totalMarks: 98,
+                        activities: [ 'Sports', [ 'Music' ], [ 'Art' ], 'Cultural', 'Dance' ],
+                        lastUpdated: ISODate('2025-12-25T16:41:43.975Z')
+                    },
+                    {
+                        _id: ObjectId('693ffbaa01d39878251e2624'),
+                        name: 'Filza Pullani',
+                        course: 'Mathematics',
+                        isPassed: true,
+                        dob: ISODate('2018-03-22T00:00:00.000Z'),
+                        joiningDate: ISODate('2022-06-01T00:00:00.000Z'),
+                        subjects: [ 'Algebra', 'Statistics', 'Geometry' ],
+                        address: { houseName: 'Pullaniyil', pincode: 668899 },
+                        attendance: 95,
+                        totalMarks: 93,
+                        activities: [ 'Sports', [ 'Music' ], [ 'Art' ], 'Cultural', 'Dance' ],
+                        lastUpdated: ISODate('2025-12-25T16:41:43.975Z')
+                    },
+                    {
+                        _id: ObjectId('693ffbaa01d39878251e2625'),
+                        name: 'Fenza Pullani',
+                        course: 'Science',
+                        isPassed: true,
+                        dob: ISODate('2019-01-10T00:00:00.000Z'),
+                        joiningDate: ISODate('2023-06-01T00:00:00.000Z'),
+                        subjects: [ 'Physics', 'Chemistry', 'Biology' ],
+                        address: { houseName: 'Pullaniyil', pincode: 668899 },
+                        attendance: 95,
+                        totalMarks: 85,
+                        activities: [ 'Sports', [ 'Music' ], [ 'Art' ], 'Cultural', 'Dance' ],
+                        lastUpdated: ISODate('2025-12-25T16:41:43.975Z')
+                    },
+                    {
+                        _id: ObjectId('6943f36a9dbe626e2b1e2621'),
+                        name: 'Ayath',
+                        course: 'Malayalam',
+                        isPassed: true,
+                        attendance: 95,
+                        totalMarks: 97,
+                        activities: [ 'Sports', [ 'Music' ], [ 'Art' ], 'Cultural', 'Dance' ],
+                        lastUpdated: ISODate('2025-12-25T16:41:43.975Z')
+                    },
+                    {
+                        _id: ObjectId('694d86d55cae55fd78596ffb'),
+                        name: 'Neha',
+                        course: 'Sanskrit'
+                    },
+                    {
+                        _id: ObjectId('694d8e397837e0cb431e2621'),
+                        name: 'Neha',
+                        course: 'Maths',
+                        attendance: 80
+                    }
+                    ]
+
+

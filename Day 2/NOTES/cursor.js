@@ -7,6 +7,11 @@
 //    * Cursor is an object means it is not an actual data, it is created by MongoDB internally.
 //    * it is not a data. It is a pointer.
 
+// Definition:- Cursor is a pointer that references the documents of collection returned by the find method
+//          * It allows to iterate over the documents in the result set.
+//          * By default the cursor iterates automatically,but it can iterate manually too by the user.
+
+
 //    * Whenever we run find(), return cursor.
 //        Eg:-  db.students.find()       // instead of return documents directly,here return cursor.
 
@@ -18,11 +23,11 @@
 
 
 //                                        Cursor methods  
-//                ____________________________________________________________
-//               |                   |                   |                    |      
-//               |                   |                   |                    |    
-//               v                   v                   v                    v
-//             sort()              limit()             skip()             forEach()
+//    _________________________________________________________________________________________
+//   |              |              |              |             |            |                |        
+//   |              |              |              |             |            |                |
+//   v              v              v              v             v            v                v
+// sort()        limit()         skip()       forEach()     toArray()     pretty()      countDocuments()
 
 
 
@@ -141,6 +146,89 @@
 //                  { $inc: { age: 1 } }
 //               );
 //            });                                 // All students age increase by 1
+
+
+
+//   5) toArray()
+//   -----*------
+//    It is a cursor method that converts all documents referenced by cursor into a javascript array.
+//        *  If we dont use toArray, MongoDB doesn't fetch all documents at once.
+
+//  syntax:- db.students.find().toArray
+
+//       Output will be like:-
+            // [
+            // {
+            //     _id: ObjectId('693fa595c5d7f5eb8b1e2621'),
+            //     name: 'Shanu',
+            //     course: '8'
+            // },
+            // {
+            //     _id: ObjectId('693ffa7501d39878251e2621'),
+            //     name: 'Shan Pullani',
+            //     course: 'English',
+            //     marks: 99,
+            //     isPassed: true,
+            //     dob: ISODate('2015-08-02T00:00:00.000Z'),
+            //     joiningDate: ISODate('2018-04-01T00:00:00.000Z'),
+            //     subjects: [ 'Grammar', 'Literature', 'Poetry' ],
+            //     address: { houseName: 'Pullaniyil', pincode: 668899 }
+            // },
+            // {
+            //     _id: ObjectId('693ffbaa01d39878251e2623'),
+            //     name: 'Faraza Pullani',
+            //     course: 'English',
+            //     marks: 98,
+            //     isPassed: true,
+            //     dob: ISODate('2017-05-14T00:00:00.000Z'),
+            //     joiningDate: ISODate('2021-06-01T00:00:00.000Z'),
+            //     subjects: [ 'Grammar', 'Creative Writing', 'Literature' ],
+            //     address: { houseName: 'Pullaniyil', pincode: 668899 }
+            // },
+            // {
+            //     _id: ObjectId('693ffbaa01d39878251e2624'),
+            //     name: 'Filza Pullani',
+            //     course: 'Mathematics',
+            //     marks: 93,
+            //     isPassed: true,
+            //     dob: ISODate('2018-03-22T00:00:00.000Z'),
+            //     joiningDate: ISODate('2022-06-01T00:00:00.000Z'),
+            //     subjects: [ 'Algebra', 'Statistics', 'Geometry' ],
+            //     address: { houseName: 'Pullaniyil', pincode: 668899 }
+            // },
+            // {
+            //     _id: ObjectId('693ffbaa01d39878251e2625'),
+            //     name: 'Fenza Pullani',
+            //     course: 'Science',
+            //     marks: 85,
+            //     isPassed: true,
+            //     dob: ISODate('2019-01-10T00:00:00.000Z'),
+            //     joiningDate: ISODate('2023-06-01T00:00:00.000Z'),
+            //     subjects: [ 'Physics', 'Chemistry', 'Biology' ],
+            //     address: { houseName: 'Pullaniyil', pincode: 668899 }
+            // },
+            // {
+            //     _id: ObjectId('6943f36a9dbe626e2b1e2621'),
+            //     name: 'Ayath',
+            //     course: 'Malayalam',
+            //     marks: 97,
+            //     isPassed: true
+            // }
+            // ]
+
+
+
+
+//   6) countDocuments()
+
+//  It is used to count how many documents match a given condition in a collection.
+//     *It doesn't return a document. Instead it return a number(how many documents matches the condition)
+
+//  syntax:- db.students.countDocuments(query)
+//           * if query doesnt mentioned,it return all documents count. Like, if have 10 documents. results will be 10.
+//           * if we mentioned query,like isPassed:true,
+//           *       db.students.countDocuments({isPassed:true})
+//           *          -will return only isPassed students count. Like, if only 5 students passed. Output will be 5.
 
 
 
