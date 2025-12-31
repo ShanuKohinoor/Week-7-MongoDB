@@ -1,0 +1,29 @@
+Tasks:
+    1. Use the same school database.
+    2. Data Modeling:
+          2a. Create two collections, students and courses.
+          2b. Show one example of embedding (store course details inside a student).
+          2c. Show one example of referencing (store only courseId in the student).
+    3. Indexing:
+          3a. Create a single-field index on course.
+          3b. Create a compound index on { course: 1, totalMarks: -1 }.
+          3c. Create a text index on subjects and search for “Math”.
+    4. Performance:
+           • Run one query with and without index; compare the result using explain("executionStats").
+
+
+
+
+
+
+    1. Use the same school database.
+    2. Data Modeling:
+          2a. Create two collections, students and courses.
+          2b. Show one example of embedding (store course details inside a student).
+          2c. Show one example of referencing (store only courseId in the student).
+    3. Indexing:
+          3a. Create a single-field index on course.
+          3b. Create a compound index on { course: 1, totalMarks: -1 }.
+          3c. Create a text index on subjects and search for “Math”.
+    4. Performance:
+           • Run one query with and without index; compare the result using explain("executionStats").

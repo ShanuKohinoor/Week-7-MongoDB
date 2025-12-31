@@ -93,7 +93,12 @@
 // | 4 |         $sort                     |             * Sort array while updating                         |
 // |___|___________________________________|_________________________________________________________________|
 // |                                                                                                         |
-// |                Array operators + helper --> control position, order, size                               |                                                                
+// |      * Array operators + helper --> control position, order, size                                       |
+// |                                                                                                         |
+// |     * $position, $slice and $sort are not used with addToSet because addToset only take unique elements.|
+// |          - These work with $push because these three hepler operations used on length of the array.     |
+// |          - Must use $each in every operation, before using these three helper operation.                |
+// |                                                                                                         |
 // |_________________________________________________________________________________________________________|                                                                                                       
 
 
